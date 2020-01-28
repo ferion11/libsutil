@@ -163,6 +163,7 @@ echo "Starting Zenity GUI..."
 #==========================
 
 #======= Main =============
+export WINEARCH=win32
 export WINEPREFIX=$WINEDIR
 
 gtk_continue_question "This script will download and install Logos Bible v$LOGOS_VERSION. Do you wish to continue?"
