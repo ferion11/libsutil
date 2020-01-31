@@ -24,3 +24,4 @@ EOF
 chmod +x $HOME/Desktop/Logos.sh
 IFS=$IFS_TMP
 #------------------------------
+#TODO: Rebuild the AppImage folder

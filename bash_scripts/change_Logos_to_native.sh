@@ -21,3 +21,4 @@ EOF
 chmod +x $HOME/Desktop/Logos.sh
 IFS=$IFS_TMP
 #------------------------------
+#TODO: remoe AppImage folder
