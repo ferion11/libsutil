@@ -1,7 +1,9 @@
 import sys, time, threading
 
 #twirl_sequence = "/-\\|/-\\|/-\\|/-\\|\\-/|\\-/|\\-/|\\-/|"
-twirl_sequence = "v<^>v<^>v<^>v<^>^<v>^<v>^<v>^<v>"
+#twirl_sequence = "v<^>" *4 + "^<v>" *4
+#twirl_sequence = "dqpb" *4 + "pqdb" *4
+twirl_sequence = ".oO°Oo."
 
 def spin_cursor():
     while True:
@@ -19,7 +21,7 @@ spin_thread = threading.Thread(target=spin_cursor)
 spin_thread.start()
 
 # do some more work in the main thread, or just sleep:
-time.sleep(7)
+time.sleep(3)
 
 # tell the spinner to stop, and wait for it to do so;
 # this will clear the last cursor before the program moves on
