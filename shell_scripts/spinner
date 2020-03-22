@@ -1,0 +1,18 @@
+#!/bin/bash
+# your real command here, instead of sleep
+sleep 7 &
+PID=$!
+i=1
+#sp="/-\|"
+#sp="/-\\|/-\\|/-\\|/-\\|\\-/|\\-/|\\-/|\\-/|"
+#sp=".oO@*.oO@*.oO@*.oO@*.oO@*.oO@*.oO@*.oO@*"
+sp="v<^>v<^>v<^>v<^>v<^>v<^>v<^>v<^>"
+#sp="+x"
+#sp=".oO記o..oO記o..oO記o..oO記o..oO記o..oO記o..oO記o..oO記o."
+#sp="+x"
+echo -n ' '
+while [ -d /proc/$PID ]
+do
+  printf "\b${sp:i++%${#sp}:1}"
+  sleep 0.1
+done
