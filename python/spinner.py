@@ -3,7 +3,10 @@ import sys, time, threading
 #twirl_sequence = "/-\\|/-\\|/-\\|/-\\|\\-/|\\-/|\\-/|\\-/|"
 #twirl_sequence = "v<^>" *4 + "^<v>" *4
 #twirl_sequence = "dqpb" *4 + "pqdb" *4
-twirl_sequence = ".oO°Oo."
+#twirl_sequence = ".oO°Oo."
+#twirl_sequence = "░▒▓"
+twirl_sequence = "▙▛▜▟"
+#twirl_sequence = "1234"
 
 def spin_cursor():
     while True:
