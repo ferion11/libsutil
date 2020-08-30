@@ -1,6 +1,39 @@
 #!/bin/bash -e
-INSTALL_DIR="/tmp/test/wine-staging-5.15"
+# v0.2
+HERE="$(dirname "$(readlink -f "${0}")")"
+INSTALL_DIR_NAME="wineInstallation"
+INSTALL_DIR="${HERE}/${INSTALL_DIR_NAME}"
 
+selectInstallation() {
+	INSTALLATION_FULLPATH="$(zenity --file-selection --directory --filename="${HERE}"/)"
+	if [ -z "${INSTALLATION_FULLPATH}" ]; then
+		echo "No directory file selected! exiting..."
+		exit 1
+	fi
+	INSTALLATION_INSIDE_DIR="$(dirname ${INSTALLATION_FULLPATH})"
+	INSTALLATION_DIRNAME="$(basename ${INSTALLATION_FULLPATH})"
+
+	if [ "${INSTALLATION_INSIDE_DIR}" != "${HERE}" ]; then
+		echo "is out"
+		rm -rf "${INSTALL_DIR}"
+		ln -s "${INSTALLATION_FULLPATH}" "${INSTALL_DIR}"
+		echo "Linked ${INSTALLATION_FULLPATH} with ${INSTALL_DIR}"
+	else
+		echo "is here"
+		rm -rf "${INSTALL_DIR}"
+		ln -s "${INSTALLATION_DIRNAME}" "${INSTALL_DIR}"
+		echo "Linked ${INSTALLATION_DIRNAME} with ${INSTALL_DIR}"
+	fi
+
+	echo "Installation selected!"
+	exit 0
+}
+
+if [ "${1}" = "selectInstallation" ] || [ ! -d "${INSTALL_DIR}" ]; then
+	selectInstallation
+fi
+
+#=================================================
 export WINEVERPATH="${INSTALL_DIR}"
 export WINESERVER="${INSTALL_DIR}/bin/wineserver"
 export WINELOADER="${INSTALL_DIR}/bin/wine"
