@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# v0.2
+# v0.3
 HERE="$(dirname "$(readlink -f "${0}")")"
 INSTALL_DIR_NAME="wineInstallation"
 INSTALL_DIR="${HERE}/${INSTALL_DIR_NAME}"
@@ -10,8 +10,8 @@ selectInstallation() {
 		echo "No directory file selected! exiting..."
 		exit 1
 	fi
-	INSTALLATION_INSIDE_DIR="$(dirname ${INSTALLATION_FULLPATH})"
-	INSTALLATION_DIRNAME="$(basename ${INSTALLATION_FULLPATH})"
+	INSTALLATION_INSIDE_DIR="$(dirname "${INSTALLATION_FULLPATH}")"
+	INSTALLATION_DIRNAME="$(basename "${INSTALLATION_FULLPATH}")"
 
 	if [ "${INSTALLATION_INSIDE_DIR}" != "${HERE}" ]; then
 		echo "is out"
@@ -44,6 +44,7 @@ export LD_LIBRARY_PATH="${INSTALL_DIR}/lib/wine:${LD_LIBRARY_PATH}"
 
 BINARY_NAME="${0##*/}"
 SCRIPT_NAME="$(basename -- "$(readlink -f -- "$0")")"
+export SCRIPT_NAME
 #=================================================
 
 # Load winecfg if no arguments given
