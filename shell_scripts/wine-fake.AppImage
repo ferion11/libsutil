@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# v0.3
+# v0.4
 HERE="$(dirname "$(readlink -f "${0}")")"
 INSTALL_DIR_NAME="wineInstallation"
 INSTALL_DIR="${HERE}/${INSTALL_DIR_NAME}"
@@ -34,17 +34,24 @@ if [ "${1}" = "selectInstallation" ] || [ ! -d "${INSTALL_DIR}" ]; then
 fi
 
 #=================================================
+BINARY_NAME="${0##*/}"
+SCRIPT_NAME="$(basename -- "$(readlink -f -- "$0")")"
+export SCRIPT_NAME
+
+if [[ "${BINARY_NAME}" == "wine" ]]; then
+	export WINE="${INSTALL_DIR}/bin/wine"
+	export WINELOADER="${WINE}"
+else
+	export WINE="${INSTALL_DIR}/bin/wine64"
+	export WINELOADER="${WINE}"
+fi
+
 export WINEVERPATH="${INSTALL_DIR}"
 export WINESERVER="${INSTALL_DIR}/bin/wineserver"
-export WINELOADER="${INSTALL_DIR}/bin/wine"
 export WINEPATH="${INSTALL_DIR}/bin:${INSTALL_DIR}/lib/wine:${WINEPATH}"
 export WINEDLLPATH="${INSTALL_DIR}/lib/wine/fakedlls:${WINEDLLPATH}"
 
 export LD_LIBRARY_PATH="${INSTALL_DIR}/lib/wine:${LD_LIBRARY_PATH}"
-
-BINARY_NAME="${0##*/}"
-SCRIPT_NAME="$(basename -- "$(readlink -f -- "$0")")"
-export SCRIPT_NAME
 #=================================================
 
 # Load winecfg if no arguments given
