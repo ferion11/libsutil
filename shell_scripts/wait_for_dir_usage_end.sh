@@ -15,12 +15,7 @@ wait_process_using_dir() {
 		echo "winetricks-moded: sleep ${VERIFICATION_TIME}"
 		sleep "${VERIFICATION_TIME}"
 
-		PID_LIST="$(fuser "${VERIFICATION_DIR}")"
-		echo "winetricks-moded PID_LIST: ${PID_LIST}"
-
-		# double quote make one bug!
-		# shellcheck disable=SC2086
-		FIST_PID="$(echo ${PID_LIST} | cut -d' ' -f1)"
+		FIST_PID="$(lsof -t "${VERIFICATION_DIR}" | head -n 1)"
 		echo "winetricks-moded FIST_PID: ${FIST_PID}"
 		if [ -n "${FIST_PID}" ]; then
 			i=0
