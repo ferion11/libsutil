@@ -10,17 +10,19 @@
 #include <fcntl.h>
 #include <string.h>
 
-/* 
+/*
  * Author: https://github.com/Hackerl
  * https://github.com/Hackerl/Wine_Appimage/issues/11#issuecomment-448081998
  * sudo apt-get -y install gcc-multilib
  * only for i386: gcc -std=c99 -m32 -static preloaderhook.c -o wine-preloader_hook
  * Put the file in the /bin directory, in the same directory as the wine-preloader.
  * hook int 0x80 open syscall. use special ld.so
+
+gcc -std=c99 -static preloaderhook64.c -o wine64-preloader_hook
  * */
 
 #define LONGSIZE sizeof(long)
-#define TARGET_PATH "/lib/ld-linux.so.2"
+#define TARGET_PATH "/lib64/ld-linux-x86-64.so.2"
 #define HasZeroByte(v) ~((((v & 0x7F7F7F7F) + 0x7F7F7F7F) | v) | 0x7F7F7F7F)
 #define HOOK_OPEN_LD_SYSCALL -1
 
@@ -29,7 +31,7 @@ int main(int argc, char ** argv)
     if (argc < 2)
         return 0;
 
-    char * wineloader = (char *) getenv("WINELDLIBRARY");
+    char * wineloader = (char *) getenv("WINE64LDLIBRARY");
 
     if (wineloader == NULL)
     {
@@ -60,15 +62,15 @@ int main(int argc, char ** argv)
             if(WIFEXITED(status))
                 break;
 
-            long orig_eax = ptrace(PTRACE_PEEKUSER, 
-                            child, 4 * ORIG_EAX, 
+            long orig_eax = ptrace(PTRACE_PEEKUSER,
+                            child, 8 * ORIG_RAX,
                             NULL);
 
             static int insyscall = 0;
 
             if (orig_eax == HOOK_OPEN_LD_SYSCALL)
             {
-                ptrace(PTRACE_POKEUSER, child, 4 * EAX, LD_fd);
+                ptrace(PTRACE_POKEUSER, child, 8 * RAX, LD_fd);
 
                 //Detch
                 ptrace(PTRACE_DETACH, child, NULL, NULL);
@@ -78,13 +80,13 @@ int main(int argc, char ** argv)
             if (orig_eax == SYS_open)
             {
                 if(insyscall == 0)
-                {    
+                {
                     /* Syscall entry */
                     insyscall = 1;
 
                     //Get Path Ptr
-                    long ebx = ptrace(PTRACE_PEEKUSER, 
-                                child, 4 * EBX, NULL);
+                    long rbx = ptrace(PTRACE_PEEKUSER,
+                                child, 8 * RBX, NULL);
 
                     char Path[256];
                     memset(Path, 0, 256);
@@ -92,28 +94,28 @@ int main(int argc, char ** argv)
                     //Read Path String
                     for (int i = 0; i < sizeof(Path)/LONGSIZE; i ++)
                     {
-                        union 
+                        union
                         {
                             long val;
                             char chars[LONGSIZE];
                         } data;
 
-                        data.val = ptrace(PTRACE_PEEKDATA, child, ebx + i * 4, NULL);
-                        
-                        memcpy(Path + i * 4, data.chars, LONGSIZE);
+                        data.val = ptrace(PTRACE_PEEKDATA, child, rbx + i * 8, NULL);
+
+                        memcpy(Path + i * 8, data.chars, LONGSIZE);
 
                         if (HasZeroByte(data.val))
                             break;
                     }
-                    
+
                     if (strcmp(Path, TARGET_PATH) == 0)
                     {
                         //Modify Syscall -1. So Will Not Call Open Syscall.
-                        ptrace(PTRACE_POKEUSER, child, 4 * ORIG_EAX, HOOK_OPEN_LD_SYSCALL);
+                        ptrace(PTRACE_POKEUSER, child, 8 * ORIG_RAX, HOOK_OPEN_LD_SYSCALL);
                     }
                 }
                 else
-                { 
+                {
                     /* Syscall exit */
                     insyscall = 0;
                 }

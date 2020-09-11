@@ -8,8 +8,10 @@
  * sudo apt-get -y install gcc-multilib
  * gcc -shared -fPIC -ldl libhookexecv.c -o libhookexecv.so
  * for i386: gcc -shared -fPIC -m32 -ldl libhookexecv.c -o libhookexecv.so
- * 
+ *
  * hook wine execv syscall. use special ld.so
+
+gcc -shared -fPIC -ldl libhookexecv64.c -o libhookexecv64.so
  * */
 
 typedef int(*EXECV)(const char*, char**);
@@ -33,7 +35,7 @@ int execv(char *path, char ** argv)
         old_execv = (EXECV)dlsym(handle, "execv");
     }
 
-    char * wineloader = getenv("WINELDLIBRARY");
+    char * wineloader = getenv("WINE64LDLIBRARY");
 
     if (wineloader == NULL)
     {
@@ -50,11 +52,11 @@ int execv(char *path, char ** argv)
     char hookpath[256];
     memset(hookpath, 0, 256);
 
-    if (strendswith(path, "wine-preloader"))
+    if (strendswith(path, "wine64-preloader"))
     {
         strcat(hookpath, path);
         strcat(hookpath, "_hook");
-        
+
         wineloader = hookpath;
     }
 
