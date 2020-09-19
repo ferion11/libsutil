@@ -1,0 +1,55 @@
+diff -rc a/bin/ebuild.sh b/bin/ebuild.sh
+*** a/bin/ebuild.sh	2020-08-19 02:01:52.304161800 -0300
+--- b/bin/ebuild.sh	2020-09-19 13:20:29.566838797 -0300
+***************
+*** 220,226 ****
+  		# default target
+  		printf '%s\n' "${@}" >> "${T}/eclass-debug.log"
+  		# let the portage user own/write to this file
+! 		chgrp "${PORTAGE_GRPNAME:-portage}" "${T}/eclass-debug.log"
+  		chmod g+w "${T}/eclass-debug.log"
+  	fi
+  }
+--- 220,226 ----
+  		# default target
+  		printf '%s\n' "${@}" >> "${T}/eclass-debug.log"
+  		# let the portage user own/write to this file
+! 		[ -z ${NO_GID} ] && chgrp "${PORTAGE_GRPNAME:-portage}" "${T}/eclass-debug.log"
+  		chmod g+w "${T}/eclass-debug.log"
+  	fi
+  }
+diff -rc a/bin/phase-functions.sh b/bin/phase-functions.sh
+*** a/bin/phase-functions.sh	2020-08-19 02:01:52.308161700 -0300
+--- b/bin/phase-functions.sh	2020-09-19 13:18:54.476838064 -0300
+***************
+*** 1087,1093 ****
+  		__save_ebuild_env | __filter_readonly_variables \
+  			--filter-features > "$T/environment"
+  		assert "__save_ebuild_env failed"
+! 		chgrp "${PORTAGE_GRPNAME:-portage}" "$T/environment"
+  		chmod g+w "$T/environment"
+  	fi
+  	[[ -n $PORTAGE_EBUILD_EXIT_FILE ]] && > "$PORTAGE_EBUILD_EXIT_FILE"
+--- 1087,1093 ----
+  		__save_ebuild_env | __filter_readonly_variables \
+  			--filter-features > "$T/environment"
+  		assert "__save_ebuild_env failed"
+! 		[ -z ${NO_GID} ] && chgrp "${PORTAGE_GRPNAME:-portage}" "$T/environment"
+  		chmod g+w "$T/environment"
+  	fi
+  	[[ -n $PORTAGE_EBUILD_EXIT_FILE ]] && > "$PORTAGE_EBUILD_EXIT_FILE"
+diff -rc a/lib/portage/util/__init__.py b/lib/portage/util/__init__.py
+*** a/lib/portage/util/__init__.py	2020-08-19 02:01:52.359161900 -0300
+--- b/lib/portage/util/__init__.py	2020-09-19 13:13:26.430168889 -0300
+***************
+*** 1059,1064 ****
+--- 1059,1066 ----
+  	# Since Python 3.4, chown requires int type (no proxies).
+  	uid = int(uid)
+  	gid = int(gid)
++ 	if "NO_GID" in os.environ:
++ 		gid = -1
+  
+  	if stat_cached is None:
+  		stat_cached = _do_stat(filename, follow_links=follow_links)
+Only in b/lib/portage/util: __init__.py.orig
