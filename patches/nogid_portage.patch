@@ -52,4 +52,3 @@ diff -rc a/lib/portage/util/__init__.py b/lib/portage/util/__init__.py
   
   	if stat_cached is None:
   		stat_cached = _do_stat(filename, follow_links=follow_links)
-Only in b/lib/portage/util: __init__.py.orig
