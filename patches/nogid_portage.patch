@@ -1,6 +1,30 @@
-diff -rc a/bin/ebuild.sh b/bin/ebuild.sh
+diff -rcN a/bin/ebuild-helpers/fowners b/bin/ebuild-helpers/fowners
+*** a/bin/ebuild-helpers/fowners	2020-08-19 02:01:52.292161700 -0300
+--- b/bin/ebuild-helpers/fowners	2020-09-19 14:29:05.703536721 -0300
+***************
+*** 26,32 ****
+  # we can't prefix all arguments because
+  # chown takes random options
+  slash="/"
+! chown "${@/#${slash}/${ED%/}${slash}}"
+  ret=$?
+  
+  [[ $ret -ne 0 ]] && __helpers_die "${0##*/} failed"
+--- 26,36 ----
+  # we can't prefix all arguments because
+  # chown takes random options
+  slash="/"
+! if [ -z ${NO_GID} ]; then
+! 	chown "${@/#${slash}/${ED%/}${slash}}"
+! else
+! 	echo "* Skipping the chown command! because of NO_GID"
+! fi
+  ret=$?
+  
+  [[ $ret -ne 0 ]] && __helpers_die "${0##*/} failed"
+diff -rcN a/bin/ebuild.sh b/bin/ebuild.sh
 *** a/bin/ebuild.sh	2020-08-19 02:01:52.304161800 -0300
---- b/bin/ebuild.sh	2020-09-19 13:20:29.566838797 -0300
+--- b/bin/ebuild.sh	2020-09-19 14:21:22.653533303 -0300
 ***************
 *** 220,226 ****
   		# default target
@@ -18,9 +42,9 @@ diff -rc a/bin/ebuild.sh b/bin/ebuild.sh
   		chmod g+w "${T}/eclass-debug.log"
   	fi
   }
-diff -rc a/bin/phase-functions.sh b/bin/phase-functions.sh
+diff -rcN a/bin/phase-functions.sh b/bin/phase-functions.sh
 *** a/bin/phase-functions.sh	2020-08-19 02:01:52.308161700 -0300
---- b/bin/phase-functions.sh	2020-09-19 13:18:54.476838064 -0300
+--- b/bin/phase-functions.sh	2020-09-19 14:21:22.653533303 -0300
 ***************
 *** 1087,1093 ****
   		__save_ebuild_env | __filter_readonly_variables \
@@ -38,9 +62,9 @@ diff -rc a/bin/phase-functions.sh b/bin/phase-functions.sh
   		chmod g+w "$T/environment"
   	fi
   	[[ -n $PORTAGE_EBUILD_EXIT_FILE ]] && > "$PORTAGE_EBUILD_EXIT_FILE"
-diff -rc a/lib/portage/util/__init__.py b/lib/portage/util/__init__.py
+diff -rcN a/lib/portage/util/__init__.py b/lib/portage/util/__init__.py
 *** a/lib/portage/util/__init__.py	2020-08-19 02:01:52.359161900 -0300
---- b/lib/portage/util/__init__.py	2020-09-19 13:13:26.430168889 -0300
+--- b/lib/portage/util/__init__.py	2020-09-19 14:21:22.653533303 -0300
 ***************
 *** 1059,1064 ****
 --- 1059,1066 ----
