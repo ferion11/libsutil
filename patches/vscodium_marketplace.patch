@@ -1,0 +1,14 @@
+--- a/usr/share/codium/resources/app/product.json	2020-10-16 22:36:09.000000000 -0300
++++ b/usr/share/codium/resources/app/product.json	2020-10-17 10:48:22.040031916 -0300
+@@ -2,8 +2,9 @@
+   "serverDataFolderName": ".vscode-server-oss",
+   "linkProtectionTrustedDomains": ["https://open-vsx.org"],
+   "extensionsGallery": {
+-    "itemUrl": "https://open-vsx.org/vscode/item",
+-    "serviceUrl": "https://open-vsx.org/vscode/gallery"
++    "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery",
++    "cacheUrl": "https://vscode.blob.core.windows.net/gallery/index",
++    "itemUrl": "https://marketplace.visualstudio.com/items"
+   },
+   "quality": "stable",
+   "keyboardShortcutsUrlWin": "https://go.microsoft.com/fwlink/?linkid=832145",
